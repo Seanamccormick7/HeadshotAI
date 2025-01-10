@@ -26,7 +26,7 @@ class Predictor(BasePredictor):
         """
 
         # 1. Unzip or ensure instance_data is accessible
-        instance_data_dir = "/src/instance_images"
+        instance_data_dir = "/src/instance_images/headshotphotos"
         if instance_data.is_dir():
             # If the user provided a directory
             instance_data_dir = str(instance_data)
