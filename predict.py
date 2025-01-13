@@ -25,15 +25,18 @@ class Predictor(BasePredictor):
         Train DreamBooth. Return path to final model directory (or a sample image).
         """
 
-        # 1. Unzip or ensure instance_data is accessible
-        instance_data_dir = "/src/instance_images/headshotphotos"
+        # 1. Unzip or handle directory
+        instance_data_dir = "/src/instance_images"
         if instance_data.is_dir():
-            # If the user provided a directory
+            # If the user provided a directory, use it directly
             instance_data_dir = str(instance_data)
         else:
-            # If the user uploaded a zip, unzip it
+            # If the user uploaded a zip, unzip into /src/instance_images
             os.system(f"unzip -o {instance_data} -d /src/instance_images")
-            instance_data_dir = "/src/instance_images"
+            # Flatten any subfolder structure: move all files up to /src/instance_images
+            # ignoring subfolders. Then remove any empty subfolders.
+            os.system("find /src/instance_images -mindepth 2 -type f -exec mv -t /src/instance_images {} +")
+            os.system("find /src/instance_images -mindepth 1 -type d -empty -delete")
 
         # 2. Build the command for train_dreambooth.py
         cmd = [
